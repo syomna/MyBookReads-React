@@ -5,6 +5,7 @@ import BookCard from "./BookCard";
 const SearchBooks = ({
   books,
   value,
+  message,
   onSearchChanged,
   searchedBooks,
   updateBookShelf,
@@ -25,19 +26,6 @@ const SearchBooks = ({
     }
   };
 
-  let isIncluded = false;
-
-  const getBook = (book) => {
-    const isExits = books.some((item) => item.id === book.id);
-    if (isExits) {
-      const b = books.find((element) => element.id === book.id);
-      isIncluded = true;
-      return b;
-    } else {
-      isIncluded = false;
-      return book;
-    }
-  };
   return (
     <div className="app">
       <div className="search-books">
@@ -58,13 +46,18 @@ const SearchBooks = ({
           <div className="search-books-results">
             <ol className="books-grid">
               {searchedBooks.map((book) => {
+                let shelf = "none";
+                for (var b of books) {
+                  if (b.id === book.id) {
+                    shelf = b.shelf;
+                  }
+                }
                 return (
                   bookValidate(book) && (
-                    <li key={getBook(book).id}>
+                    <li key={book.id}>
                       <BookCard
-                        book={getBook(book)}
-                        isFromSearch={true}
-                        isIncluded={isIncluded}
+                        book={book}
+                        shelf={shelf}
                         updateBookShelf={updateBookShelf}
                       />
                     </li>
@@ -75,7 +68,7 @@ const SearchBooks = ({
           </div>
         ) : (
           <div className="search-books-results">
-            <p>No Books</p>
+            {message === null ? <p>Search for Books!</p> : <p>{message}</p>}
           </div>
         )}
       </div>
@@ -85,6 +78,7 @@ const SearchBooks = ({
 
 SearchBooks.propTypes = {
   books: propTypes.array.isRequired,
+  message: propTypes.any,
   value: propTypes.string.isRequired,
   onSearchChanged: propTypes.func.isRequired,
   searchedBooks: propTypes.array,

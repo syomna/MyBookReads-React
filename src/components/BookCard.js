@@ -1,32 +1,6 @@
 import propTypes from "prop-types";
 
-const BookCard = ({ book, isFromSearch, isIncluded, updateBookShelf }) => {
-  const options = [
-    {
-      name: "Currently Reading",
-      value: "currentlyReading",
-    },
-    {
-      name: "Want to Read",
-      value: "wantToRead",
-    },
-    {
-      name: "Read",
-      value: "read",
-    },
-    {
-      name: "None",
-      value: "none",
-    },
-  ];
-
-  const getOptions = () => {
-    if (isFromSearch && isIncluded === false) {
-      options.pop();
-    }
-    return options;
-  };
-
+const BookCard = ({ book, shelf, updateBookShelf, getDetails }) => {
   const imagesValidate = () => {
     if (book.imageLinks === null || book.imageLinks === undefined) {
       return false;
@@ -51,27 +25,28 @@ const BookCard = ({ book, isFromSearch, isIncluded, updateBookShelf }) => {
         )}
         <div className="book-shelf-changer">
           <select
-            defaultValue={
-              book.shelf === null || book.shelf === undefined
-                ? "none"
-                : book.shelf
-            }
+            defaultValue={shelf}
             onChange={(event) => {
               updateBookShelf(book, event.target.value);
             }}
           >
-            <option value="none" disabled>
-              {isFromSearch && isIncluded === false
-                ? "Add to ..."
-                : "Move to..."}
+            <option value="go-to" disabled>
+              {shelf !== "none" ? "Move to..." : "Add to ..."}
             </option>
-            {getOptions().map((opt) => {
-              return (
-                <option key={opt.value} value={opt.value}>
-                  {opt.name}
-                </option>
-              );
-            })}
+            <option key="currentlyReading" value="currentlyReading">
+              Currently Reading
+            </option>
+            <option key="wantToRead" value="wantToRead">
+              Want to Read
+            </option>
+            <option key="read" value="read">
+              Read
+            </option>
+            {shelf === "none" && (
+              <option key="none" value="none">
+                None
+              </option>
+            )}
           </select>
         </div>
       </div>
@@ -79,7 +54,7 @@ const BookCard = ({ book, isFromSearch, isIncluded, updateBookShelf }) => {
       {(book.authors === null || book.authors) === undefined ? (
         <div className="book-authors">Unknown author</div>
       ) : (
-        <div className="book-authors">{book.authors[0]}</div>
+        <div className="book-authors">{book.authors.join(" , ")}</div>
       )}
     </div>
   );
@@ -87,8 +62,7 @@ const BookCard = ({ book, isFromSearch, isIncluded, updateBookShelf }) => {
 
 BookCard.propTypes = {
   book: propTypes.object.isRequired,
-  isFromSearch: propTypes.bool.isRequired,
-  isIncluded: propTypes.bool.isRequired,
+  shelf: propTypes.string.isRequired,
   updateBookShelf: propTypes.func.isRequired,
 };
 

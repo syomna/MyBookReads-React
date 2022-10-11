@@ -14,8 +14,7 @@ const BookShelf = ({ shelf, books, updateBookShelf }) => {
                 <li key={book.id}>
                   <BookCard
                     book={book}
-                    isFromSearch={false}
-                    isIncluded={false}
+                    shelf={book.shelf}
                     updateBookShelf={updateBookShelf}
                   />
                 </li>
