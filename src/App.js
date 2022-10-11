@@ -13,9 +13,9 @@ function App() {
   const [timer, setTimer] = useState(null);
 
   const updateBookShelf = async (book, shelf) => {
+    book.shelf = shelf;
     const res = await BooksApi.update(book, shelf);
     console.log(res);
-    book.shelf = shelf;
     setBooks([...books.filter((b) => b.id !== book.id), book]);
   };
 
